@@ -140,6 +140,30 @@ export default function Loan({
     setTotalPayment(schedule.reduce((sum, entry) => sum + entry.payment, 0));
   };
 
+  const downloadCSV = () => {
+    const csvContent = [
+      [t.month, t.beginningBalance, t.interest, t.principal, t.totalPayment, t.endingBalance],
+      ...schedule.map(entry => [
+        entry.month,
+        `"${formatCurrency(entry.beginningBalance)}"`,
+        `"${formatCurrency(entry.interest)}"`,
+        `"${formatCurrency(entry.principal)}"`,
+        `"${formatCurrency(entry.payment)}"`,
+        `"${formatCurrency(entry.endingBalance)}"`
+      ])
+    ].map(e => e.join(",")).join("\n");
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `repayment_schedule_${new Date().toISOString()}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const chartData = {
     labels: schedule.length > 0 ? schedule.map(entry => `${t.month} ${entry.month}`) : [],
     datasets: [
@@ -221,6 +245,11 @@ export default function Loan({
                 ))}
               </tbody>
             </table>
+          </div>
+          <div className="mb-4">
+            <button type="button" onClick={downloadCSV} className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500">
+              Download CSV
+            </button>
           </div>
           <div id="statistics" className="bg-white p-6 rounded-lg shadow-lg mb-6">
             <h2 className="text-xl font-bold mb-4">{t.statistics}</h2>
