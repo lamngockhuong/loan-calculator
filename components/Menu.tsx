@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { useLanguage } from '../app/layout';
+import { useLanguage } from '../hooks/useLanguage';
 
 type MenuProps = {
   language: 'en' | 'vi';
