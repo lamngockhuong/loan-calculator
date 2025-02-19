@@ -196,10 +196,10 @@ export default function Loan({
       {schedule.length > 0 && (
         <div id="results">
           <h2 className="text-xl font-bold mb-4">{t.repaymentSchedule}</h2>
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto max-h-96">
             <table id="scheduleTable" className="w-full bg-white rounded-lg shadow-lg mb-6">
-              <thead>
-                <tr className="bg-blue-500 text-white">
+              <thead className="sticky top-0 bg-blue-500 text-white">
+                <tr>
                   <th className="p-2">{t.month}</th>
                   <th className="p-2">{t.beginningBalance}</th>
                   <th className="p-2">{t.interest}</th>
