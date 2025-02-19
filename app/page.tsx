@@ -1,23 +1,16 @@
 'use client';
 import { useState } from 'react';
 import Loan from '../components/Loan';
+import { useLanguage } from './layout';
+import { InterestRate, ScheduleEntry } from '../types/loan.interfaces';
 
-interface InterestRate {
-  period: number;
-  months: number;
-  rate: string;
-}
+const translations = {
+  en: 'Loan Repayment Plan Analysis',
+  vi: 'Phân tích kế hoạch trả nợ vay'
+};
 
-interface ScheduleEntry {
-  month: number;
-  beginningBalance: number;
-  interest: number;
-  principal: number;
-  payment: number;
-  endingBalance: number;
-}
-
-export default function Home() {
+export default function HomePage() {
+  const language = useLanguage();
   const [loanAmount, setLoanAmount] = useState<string>('');
   const [loanYears, setLoanYears] = useState<string>('');
   const [calcMethod, setCalcMethod] = useState<string>('annuity');
@@ -25,22 +18,10 @@ export default function Home() {
   const [schedule, setSchedule] = useState<ScheduleEntry[]>([]);
   const [totalInterest, setTotalInterest] = useState<number>(0);
   const [totalPayment, setTotalPayment] = useState<number>(0);
-  const [language, setLanguage] = useState<'en' | 'vi'>('vi');
-
-  const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setLanguage(e.target.value as 'en' | 'vi');
-  };
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-2xl font-bold mb-4">Phân tích kế hoạch trả nợ vay</h1>
-      <div className="mb-4">
-        <label htmlFor="language" className="mr-2">Language:</label>
-        <select id="language" value={language} onChange={handleLanguageChange}>
-          <option value="vi">Vietnamese</option>
-          <option value="en">English</option>
-        </select>
-      </div>
+      <h1 className="text-4xl font-extrabold mb-6 text-center text-gray-800">{translations[language]}</h1>
       <Loan
         loanAmount={loanAmount}
         setLoanAmount={setLoanAmount}

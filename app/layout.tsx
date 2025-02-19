@@ -1,18 +1,46 @@
-import 'tailwindcss/tailwind.css';
+"use client";
 
-export const metadata = {
-  title: 'Loan Calculator',
-  description: 'A simple loan calculator',
-}
+import '../styles/globals.css';
+import Menu from '../components/Menu';
+import { useState, useEffect, createContext, useContext } from 'react';
+
+const LanguageContext = createContext<'en' | 'vi'>('vi');
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const [language, setLanguage] = useState<'en' | 'vi'>('vi');
+
+  useEffect(() => {
+    const storedLanguage = localStorage.getItem('language') as 'en' | 'vi';
+    if (storedLanguage) {
+      setLanguage(storedLanguage);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('language', language);
+  }, [language]);
+
+  const handleLanguageChange = (lang: 'en' | 'vi') => {
+    setLanguage(lang);
+  };
+
   return (
     <html lang="en" className="no-touch" data-lt-installed="true">
-      <body>{children}</body>
+      <head>
+        <link rel="icon" href="/favicon.ico" />
+      </head>
+      <body>
+        <LanguageContext.Provider value={language}>
+          <Menu language={language} handleLanguageChange={handleLanguageChange} />
+          <main>{children}</main>
+        </LanguageContext.Provider>
+      </body>
     </html>
   )
 }
+
+export const useLanguage = () => useContext(LanguageContext);

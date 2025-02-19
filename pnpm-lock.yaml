@@ -28,10 +28,10 @@ importers:
         version: 19.0.0(react@19.0.0)
     devDependencies:
       '@eslint/eslintrc':
-        specifier: ^3
+        specifier: ^3.0.0
         version: 3.2.0
       '@types/node':
-        specifier: ^20
+        specifier: ^20.4.2
         version: 20.17.19
       '@types/react':
         specifier: ^19
@@ -40,19 +40,19 @@ importers:
         specifier: ^19
         version: 19.0.4(@types/react@19.0.10)
       eslint:
-        specifier: ^9
+        specifier: ^9.0.0
         version: 9.20.1(jiti@1.21.7)
       eslint-config-next:
         specifier: 15.1.7
         version: 15.1.7(eslint@9.20.1(jiti@1.21.7))(typescript@5.7.3)
       postcss:
-        specifier: ^8
+        specifier: ^8.4.21
         version: 8.5.2
       tailwindcss:
-        specifier: ^3.4.1
+        specifier: ^3.4.2
         version: 3.4.17
       typescript:
-        specifier: ^5
+        specifier: ^5.1.6
         version: 5.7.3
 
 packages:
