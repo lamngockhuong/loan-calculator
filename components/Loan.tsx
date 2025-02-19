@@ -1,8 +1,9 @@
-import { ChangeEvent } from 'react';
+import { ChangeEvent, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { formatCurrency, computeScheduleAnnuity, computeScheduleFixed } from '../utils/loan.utils';
 import { InterestRate, ScheduleEntry, LoanProps } from '../types/loan.interfaces';
+import Modal from './Modal';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend);
 
@@ -31,7 +32,12 @@ const translations = {
     chart: 'Repayment Chart',
     interestAndPrincipalChart: 'Interest and Principal Chart',
     interestRate: (period: number, months: number) =>
-      months === 12 ? `Interest Rate Year ${period} (%)` : months === 0 ? `Interest Rate for Last Year (%)` : `Interest Rate for Last ${months} Months (%)`
+      months === 12 ? `Interest Rate Year ${period} (%)` : months === 0 ? `Interest Rate for Last Year (%)` : `Interest Rate for Last ${months} Months (%)`,
+    modalMessages: {
+      invalidLoanTerm: 'Please enter a valid loan term.',
+      invalidLoanAmount: 'Please enter a valid loan amount.',
+      invalidInterestRates: 'Please enter valid interest rates.'
+    }
   },
   vi: {
     loanAmount: 'Số tiền vay (VND):',
@@ -54,7 +60,12 @@ const translations = {
     chart: 'Biểu đồ trả nợ',
     interestAndPrincipalChart: 'Biểu đồ lãi và gốc',
     interestRate: (period: number, months: number) =>
-      months === 12 ? `Lãi suất năm ${period} (%)` : months === 0 ? `Lãi suất cho năm cuối (%)` : `Lãi suất cho ${months} tháng cuối (%)`
+      months === 12 ? `Lãi suất năm ${period} (%)` : months === 0 ? `Lãi suất cho năm cuối (%)` : `Lãi suất cho ${months} tháng cuối (%)`,
+    modalMessages: {
+      invalidLoanTerm: 'Vui lòng nhập số năm vay hợp lệ.',
+      invalidLoanAmount: 'Vui lòng nhập số tiền vay hợp lệ.',
+      invalidInterestRates: 'Vui lòng nhập lãi suất hợp lệ.'
+    }
   }
 };
 
@@ -76,6 +87,7 @@ export default function Loan({
   language
 }: LoanProps) {
   const t = translations[language];
+  const [modalMessage, setModalMessage] = useState<string | null>(null);
 
   const handleLoanAmountChange = (e: ChangeEvent<HTMLInputElement>): void => {
     const value = e.target.value.replace(/,/g, '');
@@ -87,7 +99,7 @@ export default function Loan({
   const generateRates = (): void => {
     const loanYearsValue = parseFloat(loanYears);
     if (isNaN(loanYearsValue) || loanYearsValue <= 0) {
-      alert(language === 'vi' ? 'Vui lòng nhập số năm vay hợp lệ.' : 'Please enter a valid loan term.');
+      setModalMessage(t.modalMessages.invalidLoanTerm);
       return;
     }
     const fullYears = Math.floor(loanYearsValue);
@@ -113,11 +125,11 @@ export default function Loan({
     const loanAmountValue = parseFloat(loanAmount.replace(/,/g, ''));
     const loanYearsValue = parseFloat(loanYears);
     if (isNaN(loanAmountValue) || loanAmountValue <= 0) {
-      alert(language === 'vi' ? 'Vui lòng nhập số tiền vay hợp lệ.' : 'Please enter a valid loan amount.');
+      setModalMessage(t.modalMessages.invalidLoanAmount);
       return;
     }
     if (isNaN(loanYearsValue) || loanYearsValue <= 0) {
-      alert(language === 'vi' ? 'Vui lòng nhập số năm vay hợp lệ.' : 'Please enter a valid loan term.');
+      setModalMessage(t.modalMessages.invalidLoanTerm);
       return;
     }
     const totalMonths = Math.round(loanYearsValue * 12);
@@ -127,7 +139,7 @@ export default function Loan({
 
     const rates = interestRates.map(rate => parseFloat(rate.rate));
     if (rates.some(rate => isNaN(rate) || rate < 0)) {
-      alert(language === 'vi' ? 'Vui lòng nhập lãi suất hợp lệ.' : 'Please enter valid interest rates.');
+      setModalMessage(t.modalMessages.invalidInterestRates);
       return;
     }
 
@@ -207,6 +219,11 @@ export default function Loan({
 
   return (
     <form id="loanForm" className="bg-white p-6 rounded-lg shadow-lg mb-6">
+      {modalMessage && (
+        <Modal onClose={() => setModalMessage(null)}>
+          {modalMessage}
+        </Modal>
+      )}
       <div className="mb-4">
         <label htmlFor="loanAmount" className="block text-gray-700 font-semibold">{t.loanAmount}</label>
         <input type="text" id="loanAmount" value={loanAmount} onChange={handleLoanAmountChange} required className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
