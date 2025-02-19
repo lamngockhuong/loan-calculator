@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import Loan from '../components/Loan';
-import { useLanguage } from './layout';
+import { useLanguage } from '../hooks/useLanguage';
 import { InterestRate, ScheduleEntry } from '../types/loan.interfaces';
 
 const translations = {

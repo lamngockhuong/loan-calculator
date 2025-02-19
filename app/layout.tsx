@@ -2,9 +2,8 @@
 
 import '../styles/globals.css';
 import Menu from '../components/Menu';
-import { useState, useEffect, createContext, useContext } from 'react';
-
-const LanguageContext = createContext<'en' | 'vi'>('vi');
+import { useState, useEffect } from 'react';
+import { LanguageContext } from '../hooks/useLanguage';
 
 export default function RootLayout({
   children,
@@ -42,5 +41,3 @@ export default function RootLayout({
     </html>
   )
 }
-
-export const useLanguage = () => useContext(LanguageContext);
