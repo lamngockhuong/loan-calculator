@@ -1,12 +1,13 @@
 import { ChangeEvent } from 'react';
 import dynamic from 'next/dynamic';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { formatCurrency, computeScheduleAnnuity, computeScheduleFixed } from '../utils/loan.utils';
 import { InterestRate, ScheduleEntry, LoanProps } from '../types/loan.interfaces';
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend);
 
 const Line = dynamic(() => import('react-chartjs-2').then(mod => mod.Line), { ssr: false });
+const Bar = dynamic(() => import('react-chartjs-2').then(mod => mod.Bar), { ssr: false });
 
 const translations = {
   en: {
@@ -28,6 +29,7 @@ const translations = {
     totalInterest: 'Total Interest Payable:',
     totalPaymentSummary: 'Total Principal and Interest Payable:',
     chart: 'Repayment Chart',
+    interestAndPrincipalChart: 'Interest and Principal Chart',
     interestRate: (period: number, months: number) =>
       months === 12 ? `Interest Rate Year ${period} (%)` : months === 0 ? `Interest Rate for Last Year (%)` : `Interest Rate for Last ${months} Months (%)`
   },
@@ -50,6 +52,7 @@ const translations = {
     totalInterest: 'Tổng lãi phải trả:',
     totalPaymentSummary: 'Tổng số tiền gốc và lãi phải trả:',
     chart: 'Biểu đồ trả nợ',
+    interestAndPrincipalChart: 'Biểu đồ lãi và gốc',
     interestRate: (period: number, months: number) =>
       months === 12 ? `Lãi suất năm ${period} (%)` : months === 0 ? `Lãi suất cho năm cuối (%)` : `Lãi suất cho ${months} tháng cuối (%)`
   }
@@ -140,6 +143,30 @@ export default function Loan({
     setTotalPayment(schedule.reduce((sum, entry) => sum + entry.payment, 0));
   };
 
+  const downloadCSV = () => {
+    const csvContent = [
+      [t.month, t.beginningBalance, t.interest, t.principal, t.totalPayment, t.endingBalance],
+      ...schedule.map(entry => [
+        entry.month,
+        `"${formatCurrency(entry.beginningBalance)}"`,
+        `"${formatCurrency(entry.interest)}"`,
+        `"${formatCurrency(entry.principal)}"`,
+        `"${formatCurrency(entry.payment)}"`,
+        `"${formatCurrency(entry.endingBalance)}"`
+      ])
+    ].map(e => e.join(",")).join("\n");
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `repayment_schedule_${new Date().toISOString()}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const chartData = {
     labels: schedule.length > 0 ? schedule.map(entry => `${t.month} ${entry.month}`) : [],
     datasets: [
@@ -154,6 +181,26 @@ export default function Loan({
         data: schedule.length > 0 ? schedule.map(entry => entry.endingBalance) : [],
         borderColor: 'rgba(153, 102, 255, 1)',
         backgroundColor: 'rgba(153, 102, 255, 0.2)',
+      },
+    ],
+  };
+
+  const statisticsChartData = {
+    labels: schedule.length > 0 ? schedule.map(entry => `${t.month} ${entry.month}`) : [],
+    datasets: [
+      {
+        label: t.interest,
+        data: schedule.length > 0 ? schedule.map(entry => entry.interest) : [],
+        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        borderColor: 'rgba(255, 99, 132, 1)',
+        borderWidth: 1,
+      },
+      {
+        label: t.principal,
+        data: schedule.length > 0 ? schedule.map(entry => entry.principal) : [],
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 1,
       },
     ],
   };
@@ -196,10 +243,10 @@ export default function Loan({
       {schedule.length > 0 && (
         <div id="results">
           <h2 className="text-xl font-bold mb-4">{t.repaymentSchedule}</h2>
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto max-h-96">
             <table id="scheduleTable" className="w-full bg-white rounded-lg shadow-lg mb-6">
-              <thead>
-                <tr className="bg-blue-500 text-white">
+              <thead className="sticky top-0 bg-blue-500 text-white">
+                <tr>
                   <th className="p-2">{t.month}</th>
                   <th className="p-2">{t.beginningBalance}</th>
                   <th className="p-2">{t.interest}</th>
@@ -222,6 +269,11 @@ export default function Loan({
               </tbody>
             </table>
           </div>
+          <div className="mb-4">
+            <button type="button" onClick={downloadCSV} className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500">
+              Download CSV
+            </button>
+          </div>
           <div id="statistics" className="bg-white p-6 rounded-lg shadow-lg mb-6">
             <h2 className="text-xl font-bold mb-4">{t.statistics}</h2>
             <p id="totalInterest" className="mb-2">{t.totalInterest} <span className='font-bold'>{formatCurrency(totalInterest)}</span> VND</p>
@@ -230,6 +282,10 @@ export default function Loan({
           <div id="chart" className="bg-white p-6 rounded-lg shadow-lg mb-6">
             <h2 className="text-xl font-bold mb-4">{t.chart}</h2>
             <Line data={chartData} />
+          </div>
+          <div id="statisticsChart" className="bg-white p-6 rounded-lg shadow-lg mb-6">
+            <h2 className="text-xl font-bold mb-4">{t.interestAndPrincipalChart}</h2>
+            <Bar data={statisticsChartData} />
           </div>
         </div>
       )}
