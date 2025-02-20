@@ -13,7 +13,7 @@ export default function HomePage() {
   const language = useLanguage();
   const [loanAmount, setLoanAmount] = useState<string>('');
   const [loanYears, setLoanYears] = useState<string>('');
-  const [calcMethod, setCalcMethod] = useState<string>('annuity');
+  const [calcMethod, setCalcMethod] = useState<string>('');
   const [interestRates, setInterestRates] = useState<InterestRate[]>([]);
   const [schedule, setSchedule] = useState<ScheduleEntry[]>([]);
   const [totalInterest, setTotalInterest] = useState<number>(0);

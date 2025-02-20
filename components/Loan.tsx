@@ -152,6 +152,11 @@ export default function Loan({
     setTotalPayment(schedule.reduce((sum, entry) => sum + entry.payment, 0));
   };
 
+  const handleCalcMethodChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setCalcMethod(e.target.value);
+    calculate();
+  };
+
   const downloadCSV = () => {
     const csvContent = [
       [t.month, t.beginningBalance, t.interest, t.principal, t.totalPayment, t.endingBalance],
@@ -230,15 +235,6 @@ export default function Loan({
         <input type="number" step="0.01" id="loanYears" value={loanYears} onChange={(e: ChangeEvent<HTMLInputElement>) => setLoanYears(e.target.value)} required className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
       </div>
       <div className="mb-4">
-        <label className="block text-gray-700 font-semibold">{t.calcMethod}</label>
-        <div className="flex items-center">
-          <input type="radio" id="annuity" name="calcMethod" value="annuity" checked={calcMethod === 'annuity'} onChange={(e: ChangeEvent<HTMLInputElement>) => setCalcMethod(e.target.value)} className="mr-2" />
-          <label htmlFor="annuity" className="mr-4">{t.annuity}</label>
-          <input type="radio" id="fixed" name="calcMethod" value="fixed" checked={calcMethod === 'fixed'} onChange={(e: ChangeEvent<HTMLInputElement>) => setCalcMethod(e.target.value)} className="mr-2" />
-          <label htmlFor="fixed">{t.fixed}</label>
-        </div>
-      </div>
-      <div className="mb-4">
         <button type="button" onClick={generateRates} className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">{t.generateRates}</button>
       </div>
       <div id="interestRatesContainer" className="mb-4">
@@ -251,8 +247,14 @@ export default function Loan({
           </div>
         ))}
       </div>
-      <div>
-        <button type="button" onClick={calculate} className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-6">{t.calculate}</button>
+      <div className="mb-4">
+        <label className="block text-gray-700 font-semibold">{t.calcMethod}{calcMethod}</label>
+        <div className="flex items-center">
+          <input type="radio" id="annuity" name="calcMethod" value="annuity" checked={calcMethod === 'annuity'} onChange={handleCalcMethodChange} className="mr-2" />
+          <label htmlFor="annuity" className="mr-4">{t.annuity}</label>
+          <input type="radio" id="fixed" name="calcMethod" value="fixed" checked={calcMethod === 'fixed'} onChange={handleCalcMethodChange} className="mr-2" />
+          <label htmlFor="fixed">{t.fixed}</label>
+        </div>
       </div>
       {schedule.length > 0 && (
         <div id="results">
