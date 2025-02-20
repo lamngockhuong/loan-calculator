@@ -63,6 +63,14 @@ This is a loan calculator application built with [Next.js](https://nextjs.org) a
 13. **Error Handling**
     - Displays modal messages for invalid inputs such as invalid loan term, loan amount, or interest rates.
 
+## SEO Optimization
+
+This application includes the following SEO optimizations:
+
+- Meta tags for description, keywords, and author.
+- Sitemap XML for better indexing by search engines.
+- SEO-friendly URLs.
+
 ## Getting Started
 
 ### Prerequisites
