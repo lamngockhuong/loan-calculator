@@ -253,8 +253,20 @@ export default function Loan({
         <input type="number" step="0.01" id="loanYears" value={loanYears} onChange={(e: ChangeEvent<HTMLInputElement>) => setLoanYears(e.target.value)} required className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
       </div>
       <div className="mb-4">
-        <button type="button" onClick={() => generateRates(true)} className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">{t.generateCommonRates}</button>
-        <button type="button" onClick={() => generateRates(false)} className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 ml-2">{t.generateRates}</button>
+        <button
+          type="button"
+          onClick={() => generateRates(true)}
+          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2 sm:mb-0 sm:mr-2"
+        >
+          {t.generateCommonRates}
+        </button>
+        <button
+          type="button"
+          onClick={() => generateRates(false)}
+          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          {t.generateRates}
+        </button>
       </div>
       <div id="interestRatesContainer" className="mb-4">
         {interestRates.map((rate, index) => (
