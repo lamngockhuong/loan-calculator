@@ -19,7 +19,6 @@ env:
   PROJECT_DIR: .
 
 jobs:
-  # Build job
   build:
     runs-on: ubuntu-latest
     steps:
