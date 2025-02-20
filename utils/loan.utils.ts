@@ -79,12 +79,16 @@ function PMT(ir: number, np: number, pv: number, fv: number): number {
   return pmt;
 }
 
-function calculateMonthlyPayment(
+export function calculateMonthlyPayment(
   interestRatePerPeriod: number, // Lãi suất mỗi kỳ (ví dụ: mỗi tháng)
   totalPeriods: number, // Tổng số kỳ thanh toán (ví dụ: số tháng)
   loanAmount: number, // Giá trị khoản vay ban đầu (PV - Present Value)
   futureValue: number = 0 // Giá trị tương lai mong muốn (FV - Future Value), mặc định là 0
 ): number {
+  if (totalPeriods <= 0 || loanAmount <= 0) {
+    return 0;
+  }
+
   if (interestRatePerPeriod === 0) {
     return loanAmount / totalPeriods; // Trả góp đều nếu không có lãi suất
   }

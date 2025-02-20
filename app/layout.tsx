@@ -31,6 +31,9 @@ export default function RootLayout({
     <html lang="en" className="no-touch" data-lt-installed="true">
       <head>
         <link rel="icon" href="/favicon.ico" />
+        <meta name="description" content="Loan Calculator - Calculate your loan payments easily - Tính toán khoản vay của bạn một cách dễ dàng" />
+        <meta name="keywords" content="loan, calculator, finance, payments, khoản vay, tính toán, tài chính, thanh toán" />
+        <meta name="author" content="Lâm Ngọc Khương - me@khuong.dev" />
       </head>
       <body>
         <LanguageContext.Provider value={language}>
