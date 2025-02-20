@@ -3,6 +3,7 @@ export interface InterestRate {
   period: number;
   months: number;
   rate: string;
+  commonRate?: boolean;
 }
 
 export interface ScheduleEntry {
