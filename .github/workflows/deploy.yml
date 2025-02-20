@@ -43,6 +43,8 @@ jobs:
       - name: Setup Pages
         id: setup_pages
         uses: actions/configure-pages@v5
+        with:
+          static_site_generator: next
 
       - name: Restore cache
         uses: actions/cache@v4
