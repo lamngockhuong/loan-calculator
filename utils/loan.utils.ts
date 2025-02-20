@@ -4,93 +4,95 @@ export const formatCurrency = (value: number): string => {
   return value.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
+export const getInterestRateMonthly = (interestRates: number[], month: number): number => {
+  const yearIndex = Math.floor((month - 1) / 12);
+  const interestRate = interestRates[yearIndex] || interestRates[interestRates.length - 1];
+  return interestRate / 100 / 12;
+};
+
 export const computeScheduleAnnuity = (
   loanAmount: number,
   totalMonths: number,
-  interestRates: number[],
-  fullYears: number,
-  hasFraction: boolean,
-  totalPeriods: number
+  interestRates: number[]
 ): ScheduleEntry[] => {
   const schedule: ScheduleEntry[] = [];
   let remainingLoan = loanAmount;
-  let currentMonth = 1;
-  for (let period = 0; period < totalPeriods; period++) {
-    const monthsInPeriod = (period < totalPeriods - 1) ? 12 : (totalMonths - fullYears * 12);
-    const monthlyRate = interestRates[period] / 100 / 12;
-    const monthsRemaining = totalMonths - (currentMonth - 1);
-    let monthlyPayment;
-    if (monthlyRate === 0) {
-      monthlyPayment = remainingLoan / monthsRemaining;
-    } else {
-      monthlyPayment = remainingLoan * monthlyRate * Math.pow(1 + monthlyRate, monthsRemaining) /
-                       (Math.pow(1 + monthlyRate, monthsRemaining) - 1);
-    }
-    for (let m = 0; m < monthsInPeriod; m++) {
-      if (remainingLoan <= 0.01) { remainingLoan = 0; break; }
-      const beginningBalance = remainingLoan;
-      const interestPayment = beginningBalance * monthlyRate;
-      let principalPayment: number = monthlyPayment - interestPayment;
-      if (principalPayment > remainingLoan) {
-        principalPayment = remainingLoan;
-        monthlyPayment = interestPayment + principalPayment;
-      }
-      const endingBalance = beginningBalance - principalPayment;
-      schedule.push({
-        month: currentMonth,
-        beginningBalance: beginningBalance,
-        interest: interestPayment,
-        principal: principalPayment,
-        payment: monthlyPayment,
-        endingBalance: endingBalance
-      });
-      remainingLoan = endingBalance;
-      currentMonth++;
-    }
+
+  for (let month = 1; month <= totalMonths; month++) {
+    const interestRateMonth = getInterestRateMonthly(interestRates, month);
+    const monthlyPayment = PMT(interestRateMonth, totalMonths - month + 1, remainingLoan, 0);
+    const interestPayment = remainingLoan * interestRateMonth;
+    const principalPayment = monthlyPayment - interestPayment;
+    const endingBalance = remainingLoan - principalPayment;
+
+    schedule.push({
+      month: month,
+      beginningBalance: remainingLoan,
+      interest: interestPayment,
+      principal: principalPayment,
+      payment: monthlyPayment,
+      endingBalance: endingBalance
+    });
+
+    remainingLoan = endingBalance;
   }
+
   return schedule;
 };
 
 export const computeScheduleFixed = (
   loanAmount: number,
   totalMonths: number,
-  interestRates: number[],
-  fullYears: number,
-  hasFraction: boolean,
-  totalPeriods: number
+  interestRates: number[]
 ): ScheduleEntry[] => {
   const schedule: ScheduleEntry[] = [];
   const fixedPrincipal = loanAmount / totalMonths;
   let remainingLoan = loanAmount;
-  let currentMonth = 1;
-  const monthRates: number[] = [];
-  for (let period = 0; period < totalPeriods; period++) {
-    const monthsInPeriod = (period < totalPeriods - 1) ? 12 : (totalMonths - fullYears * 12);
-    const monthlyRate = interestRates[period] / 100 / 12;
-    for (let m = 0; m < monthsInPeriod; m++) {
-      monthRates.push(monthlyRate);
-    }
-  }
-  for (let i = 0; i < totalMonths; i++) {
-    const beginningBalance = remainingLoan;
-    const monthlyRate = monthRates[i];
-    const interestPayment = beginningBalance * monthlyRate;
-    let principalPayment = fixedPrincipal;
-    if (principalPayment > remainingLoan) {
-      principalPayment = remainingLoan;
-    }
-    const monthlyPayment = interestPayment + principalPayment;
-    const endingBalance = beginningBalance - principalPayment;
+
+  for (let month = 1; month <= totalMonths; month++) {
+    const interestRateMonth = getInterestRateMonthly(interestRates, month);
+    const interestPayment = remainingLoan * interestRateMonth;
+    const monthlyPayment = fixedPrincipal + interestPayment;
+    const endingBalance = remainingLoan - fixedPrincipal;
+
     schedule.push({
-      month: currentMonth,
-      beginningBalance: beginningBalance,
+      month: month,
+      beginningBalance: remainingLoan,
       interest: interestPayment,
-      principal: principalPayment,
+      principal: fixedPrincipal,
       payment: monthlyPayment,
       endingBalance: endingBalance
     });
+
     remainingLoan = endingBalance;
-    currentMonth++;
   }
+
   return schedule;
 };
+
+function PMT(ir: number, np: number, pv: number, fv: number): number {
+  if (!fv) {
+    fv = 0;
+  }
+  const pmt =
+    (ir * (pv * Math.pow(ir + 1, np) + fv)) / (Math.pow(ir + 1, np) - 1);
+  return pmt;
+}
+
+function calculateMonthlyPayment(
+  interestRatePerPeriod: number, // Lãi suất mỗi kỳ (ví dụ: mỗi tháng)
+  totalPeriods: number, // Tổng số kỳ thanh toán (ví dụ: số tháng)
+  loanAmount: number, // Giá trị khoản vay ban đầu (PV - Present Value)
+  futureValue: number = 0 // Giá trị tương lai mong muốn (FV - Future Value), mặc định là 0
+): number {
+  if (interestRatePerPeriod === 0) {
+    return loanAmount / totalPeriods; // Trả góp đều nếu không có lãi suất
+  }
+
+  const rateFactor = Math.pow(1 + interestRatePerPeriod, totalPeriods);
+  const monthlyPayment =
+    (interestRatePerPeriod * (loanAmount * rateFactor + futureValue)) /
+    (rateFactor - 1);
+
+  return monthlyPayment;
+}

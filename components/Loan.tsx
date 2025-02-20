@@ -133,9 +133,6 @@ export default function Loan({
       return;
     }
     const totalMonths = Math.round(loanYearsValue * 12);
-    const fullYears = Math.floor(loanYearsValue);
-    const hasFraction = (loanYearsValue - fullYears) > 0.0001;
-    const totalPeriods = fullYears + (hasFraction ? 1 : 0);
 
     const rates = interestRates.map(rate => parseFloat(rate.rate));
     if (rates.some(rate => isNaN(rate) || rate < 0)) {
@@ -145,9 +142,9 @@ export default function Loan({
 
     let schedule: ScheduleEntry[] = [];
     if (calcMethod === 'annuity') {
-      schedule = computeScheduleAnnuity(loanAmountValue, totalMonths, rates, fullYears, hasFraction, totalPeriods);
+      schedule = computeScheduleAnnuity(loanAmountValue, totalMonths, rates);
     } else if (calcMethod === 'fixed') {
-      schedule = computeScheduleFixed(loanAmountValue, totalMonths, rates, fullYears, hasFraction, totalPeriods);
+      schedule = computeScheduleFixed(loanAmountValue, totalMonths, rates);
     }
 
     setSchedule(schedule);
