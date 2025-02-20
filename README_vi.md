@@ -1,6 +1,6 @@
-# Công cụ Tính Khoản Vay
+# Máy Tính Khoản Vay
 
-Đây là ứng dụng máy tính khoản vay được xây dựng bằng [Next.js](https://nextjs.org) và khởi tạo với [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Đây là ứng dụng máy tính khoản vay được xây dựng với [Next.js](https://nextjs.org) và khởi tạo bằng [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Tính Năng
 
@@ -10,21 +10,21 @@
 
 2. **Nhập Thời Hạn Vay**
 
-   - Cho phép người dùng nhập thời hạn vay bằng năm (có thể là số lẻ).
+   - Cho phép người dùng nhập thời hạn vay bằng năm (có thể là số thập phân).
 
 3. **Chọn Phương Pháp Tính Toán**
 
    - Người dùng có thể chọn giữa hai phương pháp tính toán:
-     - Gốc, lãi chia đều hàng tháng
-     - Gốc cố định, lãi giảm dần
+     - Annuity (Gốc và Lãi Bằng Nhau)
+     - Gốc Cố Định, Lãi Giảm Dần
 
 4. **Tạo Lãi Suất**
 
-   - Tạo lãi suất cho từng năm hoặc lãi suất chung cho tất cả các năm.
+   - Tạo lãi suất cho mỗi năm hoặc một lãi suất chung cho tất cả các năm.
 
 5. **Nhập Lãi Suất**
 
-   - Cho phép người dùng nhập lãi suất cho từng kỳ hạn.
+   - Cho phép người dùng nhập lãi suất cho mỗi kỳ hạn.
 
 6. **Tính Toán Lịch Trả Nợ**
 
@@ -34,21 +34,21 @@
 
    - Hiển thị lịch trả nợ dưới dạng bảng với các cột sau:
      - Tháng
-     - Số dư đầu kỳ (VND)
-     - Tiền lãi (VND)
-     - Tiền gốc (VND)
-     - Tổng trả (VND)
-     - Số dư cuối kỳ (VND)
+     - Số Dư Đầu Kỳ (VND)
+     - Lãi Suất (VND)
+     - Gốc (VND)
+     - Tổng Thanh Toán (VND)
+     - Số Dư Cuối Kỳ (VND)
 
 8. **Hiển Thị Thống Kê**
 
-   - Hiển thị tổng lãi phải trả và tổng số tiền gốc và lãi phải trả.
+   - Hiển thị tổng lãi phải trả và tổng gốc và lãi phải trả.
 
 9. **Biểu Đồ Trả Nợ**
 
    - Hiển thị biểu đồ đường cho thấy số dư đầu kỳ và cuối kỳ trong suốt thời hạn vay.
 
-10. **Biểu Đồ Lãi và Gốc**
+10. **Biểu Đồ Lãi Suất và Gốc**
 
     - Hiển thị biểu đồ cột cho thấy số tiền lãi và gốc trong suốt thời hạn vay.
 
@@ -63,14 +63,22 @@
 13. **Xử Lý Lỗi**
     - Hiển thị thông báo lỗi cho các đầu vào không hợp lệ như thời hạn vay, số tiền vay hoặc lãi suất không hợp lệ.
 
+## Tối Ưu Hóa SEO
+
+Ứng dụng này bao gồm các tối ưu hóa SEO sau:
+
+- Thẻ meta cho mô tả, từ khóa và tác giả.
+- Sitemap XML để cải thiện việc lập chỉ mục bởi các công cụ tìm kiếm.
+- URL thân thiện với SEO.
+
 ## Bắt Đầu
 
 ### Yêu Cầu
 
-Đảm bảo bạn đã cài đặt các phần mềm sau:
+Đảm bảo rằng bạn đã cài đặt các phần mềm sau:
 
-- [Node.js](https://nodejs.org/) (phiên bản 22 trở lên)
-- [pnpm](https://pnpm.io/) (phiên bản 10 trở lên)
+- [Node.js](https://nodejs.org/) (phiên bản 22 hoặc mới hơn)
+- [pnpm](https://pnpm.io/) (phiên bản 10 hoặc mới hơn)
 
 ### Cài Đặt
 
@@ -109,7 +117,7 @@ pnpm test
 
 ### Xây Dựng Cho Sản Xuất
 
-Để tạo bản build tối ưu cho sản xuất, chạy:
+Để tạo một bản build tối ưu cho sản xuất, chạy:
 
 ```bash
 pnpm build
