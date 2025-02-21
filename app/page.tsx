@@ -20,7 +20,7 @@ export default function HomePage() {
   const [totalPayment, setTotalPayment] = useState<number>(0);
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <div className="p-3 bg-gray-100 min-h-screen">
       <h1 className="text-4xl font-extrabold mb-6 text-center text-gray-800">{translations[language]}</h1>
       <Loan
         loanAmount={loanAmount}
