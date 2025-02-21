@@ -199,6 +199,19 @@ export default function Loan({
     document.body.removeChild(link);
   };
 
+  const shareSchedule = () => {
+    const shareData = {
+      title: 'Repayment Schedule',
+      text: 'Check out my loan repayment schedule!',
+      url: window.location.href
+    };
+    if (navigator.share) {
+      navigator.share(shareData).catch(console.error);
+    } else {
+      alert('Sharing is not supported in this browser.');
+    }
+  };
+
   const chartData = {
     labels: schedule.length > 0 ? schedule.map(entry => `${t.month} ${entry.month}`) : [],
     datasets: [
@@ -239,7 +252,7 @@ export default function Loan({
 
   return (
     <div>
-      <form id="loanForm" className="bg-white p-6 rounded-lg shadow-lg mb-6">
+      <form id="loanForm" className="bg-white p-6 rounded-lg shadow-lg mb-3">
         {modalMessage && (
           <Modal onClose={() => setModalMessage(null)}>
             {modalMessage}
@@ -257,7 +270,7 @@ export default function Loan({
           <button
             type="button"
             onClick={() => generateRates(true)}
-            className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2 sm:mb-0 sm:mr-2"
+            className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2 mr-2"
           >
             {t.generateCommonRates}
           </button>
@@ -288,11 +301,18 @@ export default function Loan({
             <label htmlFor="fixed">{t.fixed}</label>
           </div>
         </div>
-        {schedule.length > 0 && (
-          <div id="results">
+      </form>
+      {schedule.length > 0 && (
+        <div id="results">
+          <div id="statistics" className="bg-white p-6 rounded-lg shadow-lg mb-3">
+            <h2 className="text-xl font-bold mb-4">{t.statistics}</h2>
+            <p id="totalInterest" className="mb-2">{t.totalInterest} <span className='font-bold'>{formatCurrency(totalInterest)}</span> VND</p>
+            <p id="totalPayment">{t.totalPaymentSummary} <span className='font-bold'>{formatCurrency(totalPayment)}</span> VND</p>
+          </div>
+          <div id="repaymentSchedule" className="bg-white p-6 rounded-lg shadow-lg mb-3">
             <h2 className="text-xl font-bold mb-4">{t.repaymentSchedule}</h2>
             <div className="overflow-x-auto max-h-96">
-              <table id="scheduleTable" className="w-full bg-white rounded-lg shadow-lg mb-6">
+              <table id="scheduleTable" className="w-full bg-white">
                 <thead className="sticky top-0 bg-blue-500 text-white" style={{ zIndex: 1 }}>
                   <tr>
                     <th className="p-2">{t.month}</th>
@@ -317,27 +337,25 @@ export default function Loan({
                 </tbody>
               </table>
             </div>
-            <div className="mb-4">
-              <button type="button" onClick={downloadCSV} className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500">
+            <div className="mb-3 mt-3">
+              <button type="button" onClick={downloadCSV} className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 mb-2 mr-2">
                 Download CSV
               </button>
-            </div>
-            <div id="statistics" className="bg-white p-6 rounded-lg shadow-lg mb-6">
-              <h2 className="text-xl font-bold mb-4">{t.statistics}</h2>
-              <p id="totalInterest" className="mb-2">{t.totalInterest} <span className='font-bold'>{formatCurrency(totalInterest)}</span> VND</p>
-              <p id="totalPayment">{t.totalPaymentSummary} <span className='font-bold'>{formatCurrency(totalPayment)}</span> VND</p>
-            </div>
-            <div id="chart" className="bg-white p-6 rounded-lg shadow-lg mb-6">
-              <h2 className="text-xl font-bold mb-4">{t.chart}</h2>
-              <Line data={chartData} />
-            </div>
-            <div id="statisticsChart" className="bg-white p-6 rounded-lg shadow-lg mb-6">
-              <h2 className="text-xl font-bold mb-4">{t.interestAndPrincipalChart}</h2>
-              <Bar data={statisticsChartData} />
+              <button type="button" onClick={shareSchedule} className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                Share Plan
+              </button>
             </div>
           </div>
-        )}
-      </form>
+          <div id="chart" className="bg-white p-6 rounded-lg shadow-lg mb-3">
+            <h2 className="text-xl font-bold mb-4">{t.chart}</h2>
+            <Line data={chartData} />
+          </div>
+          <div id="statisticsChart" className="bg-white p-6 rounded-lg shadow-lg mb-3">
+            <h2 className="text-xl font-bold mb-4">{t.interestAndPrincipalChart}</h2>
+            <Bar data={statisticsChartData} />
+          </div>
+        </div>
+      )}
       <footer className="bg-gray-800 text-white p-4 text-center">
         <p>&copy; {new Date().getFullYear()} Loan Calculator. All rights reserved.</p>
         <p>Built with <span className="heart">❤</span> by <a href="https://khuong.dev" target='_blank' className="underline">khuong.dev</a></p>
