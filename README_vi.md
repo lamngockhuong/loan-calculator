@@ -1,6 +1,6 @@
-# Máy Tính Khoản Vay
+# Công Cụ Tính Khoản Vay
 
-Đây là ứng dụng máy tính khoản vay được xây dựng với [Next.js](https://nextjs.org) và khởi tạo bằng [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Đây là ứng dụng tính khoản vay được xây dựng với [Next.js](https://nextjs.org) và khởi tạo bằng [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Tính Năng
 
@@ -10,7 +10,7 @@
 
 2. **Nhập Thời Hạn Vay**
 
-   - Cho phép người dùng nhập thời hạn vay bằng năm (có thể là số thập phân).
+   - Cho phép người dùng nhập thời hạn vay theo năm (có thể là số thập phân).
 
 3. **Chọn Phương Pháp Tính Toán**
 
@@ -18,9 +18,9 @@
      - Annuity (Gốc và Lãi Bằng Nhau)
      - Gốc Cố Định, Lãi Giảm Dần
 
-4. **Tạo Lãi Suất**
+4. **Thiết lập Lãi Suất**
 
-   - Tạo lãi suất cho mỗi năm hoặc một lãi suất chung cho tất cả các năm.
+   - Thiết lập lãi suất cho mỗi năm hoặc một lãi suất chung cho tất cả các năm.
 
 5. **Nhập Lãi Suất**
 
@@ -56,11 +56,15 @@
 
     - Cho phép người dùng tải xuống lịch trả nợ dưới dạng tệp CSV.
 
-12. **Hỗ Trợ Đa Ngôn Ngữ**
+12. **Chia Sẻ Kế Hoạch Trả Nợ**
+
+    - Cho phép người dùng chia sẻ kế hoạch trả nợ qua một liên kết duy nhất.
+
+13. **Hỗ Trợ Đa Ngôn Ngữ**
 
     - Hỗ trợ tiếng Anh và tiếng Việt.
 
-13. **Xử Lý Lỗi**
+14. **Xử Lý Lỗi**
     - Hiển thị thông báo lỗi cho các đầu vào không hợp lệ như thời hạn vay, số tiền vay hoặc lãi suất không hợp lệ.
 
 ## Tối Ưu Hóa SEO
@@ -95,9 +99,9 @@ Sau đó, cài đặt các phụ thuộc:
 pnpm install
 ```
 
-### Chạy Server Phát Triển
+### Chạy Server trên môi trường Phát Triển
 
-Đầu tiên, chạy server phát triển:
+Đầu tiên, chạy server:
 
 ```bash
 pnpm dev

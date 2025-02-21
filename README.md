@@ -56,11 +56,16 @@ This is a loan calculator application built with [Next.js](https://nextjs.org) a
 
     - Allows users to download the repayment schedule as a CSV file.
 
-12. **Multi-language Support**
+12. **Share Plan**
+
+    - Allows users to share the repayment plan via a unique link.
+
+13. **Multi-language Support**
 
     - Supports English and Vietnamese languages.
 
-13. **Error Handling**
+14. **Error Handling**
+
     - Displays modal messages for invalid inputs such as invalid loan term, loan amount, or interest rates.
 
 ## SEO Optimization
