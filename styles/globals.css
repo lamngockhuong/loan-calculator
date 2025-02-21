@@ -10,3 +10,17 @@ input, table, tr {
   border-width: 1px;
   border-color: #d1d5db;
 }
+
+.heart {
+  color: red;
+  animation: heartbeat 1.5s infinite;
+}
+
+@keyframes heartbeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.4);
+  }
+}

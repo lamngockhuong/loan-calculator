@@ -20,6 +20,11 @@ const Menu = ({ handleLanguageChange }: MenuProps) => {
     }
   };
 
+  const toggleMenu = (event: React.MouseEvent) => {
+    event.preventDefault();
+    setIsOpen(!isOpen);
+  };
+
   useEffect(() => {
     if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside);
@@ -37,7 +42,7 @@ const Menu = ({ handleLanguageChange }: MenuProps) => {
         <div className="text-white md:hidden">Loan Calculator</div>
         <button
           className="text-white md:hidden"
-          onClick={() => setIsOpen(!isOpen)}
+          onMouseDown={toggleMenu}
         >
           ☰
         </button>
@@ -49,10 +54,10 @@ const Menu = ({ handleLanguageChange }: MenuProps) => {
           </Link>
         </li>
         <li className="bg-gray-700 p-2 rounded-md md:bg-transparent">
-          <a href="https://dev.ngockhuong.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-gray-400">Blog</a>
+          <a href="https://dev.ngockhuong.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-gray-400">Dev Notes</a>
         </li>
         <li className="bg-gray-700 p-2 rounded-md md:bg-transparent">
-          <a href="https://khuong.dev" target="_blank" rel="noopener noreferrer" className="text-white hover:text-gray-400">Khuong Dev</a>
+          <a href="https://tools.khuong.dev" target="_blank" rel="noopener noreferrer" className="text-white hover:text-gray-400">Dev Tools</a>
         </li>
         <li className="flex space-x-2">
           <button onClick={() => handleLanguageChange('vi')} className={`p-2 rounded-md ${language === 'vi' ? 'bg-gray-700' : 'bg-transparent'}`}>
