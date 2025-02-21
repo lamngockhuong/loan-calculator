@@ -1,9 +1,10 @@
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { formatCurrency, computeScheduleAnnuity, computeScheduleFixed } from '../utils/loan.utils';
 import { InterestRate, ScheduleEntry, LoanProps } from '../types/loan.interfaces';
 import Modal from './Modal';
+import { ToastContainer } from 'react-toastify';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend);
 
@@ -39,7 +40,9 @@ const translations = {
       invalidLoanTerm: 'Please enter a valid loan term.',
       invalidLoanAmount: 'Please enter a valid loan amount.',
       invalidInterestRates: 'Please enter valid interest rates.'
-    }
+    },
+    downloadCSV: 'Download CSV',
+    sharePlan: 'Share Plan'
   },
   vi: {
     loanAmount: 'Số tiền vay (VND):',
@@ -69,7 +72,9 @@ const translations = {
       invalidLoanTerm: 'Vui lòng nhập số năm vay hợp lệ.',
       invalidLoanAmount: 'Vui lòng nhập số tiền vay hợp lệ.',
       invalidInterestRates: 'Vui lòng nhập lãi suất hợp lệ.'
-    }
+    },
+    downloadCSV: 'Tải CSV',
+    sharePlan: 'Chia sẻ kế hoạch'
   }
 };
 
@@ -88,7 +93,9 @@ export default function Loan({
   setTotalInterest,
   totalPayment,
   setTotalPayment,
-  language
+  language,
+  autoCalculate,
+  onSharePlan
 }: LoanProps) {
   const t = translations[language];
   const [modalMessage, setModalMessage] = useState<string | null>(null);
@@ -199,19 +206,6 @@ export default function Loan({
     document.body.removeChild(link);
   };
 
-  const shareSchedule = () => {
-    const shareData = {
-      title: 'Repayment Schedule',
-      text: 'Check out my loan repayment schedule!',
-      url: window.location.href
-    };
-    if (navigator.share) {
-      navigator.share(shareData).catch(console.error);
-    } else {
-      alert('Sharing is not supported in this browser.');
-    }
-  };
-
   const chartData = {
     labels: schedule.length > 0 ? schedule.map(entry => `${t.month} ${entry.month}`) : [],
     datasets: [
@@ -249,6 +243,12 @@ export default function Loan({
       },
     ],
   };
+
+  useEffect(() => {
+    if (autoCalculate) {
+      calculate();
+    }
+  }, [autoCalculate]);
 
   return (
     <div>
@@ -339,10 +339,10 @@ export default function Loan({
             </div>
             <div className="mb-3 mt-3">
               <button type="button" onClick={downloadCSV} className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 mb-2 mr-2">
-                Download CSV
+                {t.downloadCSV}
               </button>
-              <button type="button" onClick={shareSchedule} className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                Share Plan
+              <button type="button" onClick={onSharePlan} className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                {t.sharePlan}
               </button>
             </div>
           </div>
@@ -360,6 +360,7 @@ export default function Loan({
         <p>&copy; {new Date().getFullYear()} Loan Calculator. All rights reserved.</p>
         <p>Built with <span className="heart">❤</span> by <a href="https://khuong.dev" target='_blank' className="underline">khuong.dev</a></p>
       </footer>
+      <ToastContainer />
     </div>
   );
 }

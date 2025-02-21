@@ -1,4 +1,3 @@
-
 export interface InterestRate {
   period: number;
   months: number;
@@ -31,4 +30,6 @@ export interface LoanProps {
   totalPayment: number;
   setTotalPayment: (value: number) => void;
   language: 'en' | 'vi';
+  autoCalculate: boolean;
+  onSharePlan: () => void;
 }
