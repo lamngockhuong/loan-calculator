@@ -1,4 +1,20 @@
+import { deflateRaw, inflateRaw } from "pako";
 import { ScheduleEntry } from "../types/loan.interfaces";
+
+export const compressed = (params: object) => {
+  const jsonString = JSON.stringify(params);
+  const compressedData = deflateRaw(jsonString);
+  return btoa(String.fromCharCode(...compressedData));
+}
+
+export const decompressed = (base64String: string) => {
+  const binaryString = atob(base64String);
+  const uint8Array = new Uint8Array(
+    [...binaryString].map((c) => c.charCodeAt(0))
+  );
+  const decompressedData = inflateRaw(uint8Array, { to: 'string' });
+  return JSON.parse(decompressedData);
+}
 
 export const formatCurrency = (value: number): string => {
   return value.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
