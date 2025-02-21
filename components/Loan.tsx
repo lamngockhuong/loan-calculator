@@ -1,9 +1,10 @@
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { formatCurrency, computeScheduleAnnuity, computeScheduleFixed } from '../utils/loan.utils';
 import { InterestRate, ScheduleEntry, LoanProps } from '../types/loan.interfaces';
 import Modal from './Modal';
+import { ToastContainer } from 'react-toastify';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend);
 
@@ -39,7 +40,9 @@ const translations = {
       invalidLoanTerm: 'Please enter a valid loan term.',
       invalidLoanAmount: 'Please enter a valid loan amount.',
       invalidInterestRates: 'Please enter valid interest rates.'
-    }
+    },
+    downloadCSV: 'Download CSV',
+    sharePlan: 'Share Plan'
   },
   vi: {
     loanAmount: 'Số tiền vay (VND):',
@@ -69,7 +72,9 @@ const translations = {
       invalidLoanTerm: 'Vui lòng nhập số năm vay hợp lệ.',
       invalidLoanAmount: 'Vui lòng nhập số tiền vay hợp lệ.',
       invalidInterestRates: 'Vui lòng nhập lãi suất hợp lệ.'
-    }
+    },
+    downloadCSV: 'Tải CSV',
+    sharePlan: 'Chia sẻ kế hoạch'
   }
 };
 
@@ -88,7 +93,9 @@ export default function Loan({
   setTotalInterest,
   totalPayment,
   setTotalPayment,
-  language
+  language,
+  autoCalculate,
+  onSharePlan
 }: LoanProps) {
   const t = translations[language];
   const [modalMessage, setModalMessage] = useState<string | null>(null);
@@ -237,105 +244,123 @@ export default function Loan({
     ],
   };
 
+  useEffect(() => {
+    if (autoCalculate) {
+      calculate();
+    }
+  }, [autoCalculate]);
+
   return (
-    <form id="loanForm" className="bg-white p-6 rounded-lg shadow-lg mb-6">
-      {modalMessage && (
-        <Modal onClose={() => setModalMessage(null)}>
-          {modalMessage}
-        </Modal>
-      )}
-      <div className="mb-4">
-        <label htmlFor="loanAmount" className="block text-gray-700 font-semibold">{t.loanAmount}</label>
-        <input type="text" id="loanAmount" value={loanAmount} onChange={handleLoanAmountChange} required className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-      </div>
-      <div className="mb-4">
-        <label htmlFor="loanYears" className="block text-gray-700 font-semibold">{t.loanYears}</label>
-        <input type="number" step="0.01" id="loanYears" value={loanYears} onChange={(e: ChangeEvent<HTMLInputElement>) => setLoanYears(e.target.value)} required className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-      </div>
-      <div className="mb-4">
-        <button
-          type="button"
-          onClick={() => generateRates(true)}
-          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2 sm:mb-0 sm:mr-2"
-        >
-          {t.generateCommonRates}
-        </button>
-        <button
-          type="button"
-          onClick={() => generateRates(false)}
-          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          {t.generateRates}
-        </button>
-      </div>
-      <div id="interestRatesContainer" className="mb-4">
-        {interestRates.map((rate, index) => (
-          <div key={index} className="mb-2">
-            <label className="block text-gray-700 font-semibold">
-              {rate.commonRate ? t.interestRateCommon : t.interestRate(rate.period, rate.months)}
-            </label>
-            <input type="number" step="0.01" value={rate.rate} onChange={(e: ChangeEvent<HTMLInputElement>) => handleRateChange(index, e.target.value)} required className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          </div>
-        ))}
-      </div>
-      <div className="mb-4">
-        <label className="block text-gray-700 font-semibold">{t.calcMethod}</label>
-        <div className="flex items-center">
-          <input type="radio" id="annuity" name="calcMethod" value="annuity" checked={calcMethod === 'annuity'} onChange={handleCalcMethodChange} className="mr-2" />
-          <label htmlFor="annuity" className="mr-4">{t.annuity}</label>
-          <input type="radio" id="fixed" name="calcMethod" value="fixed" checked={calcMethod === 'fixed'} onChange={handleCalcMethodChange} className="mr-2" />
-          <label htmlFor="fixed">{t.fixed}</label>
+    <div>
+      <form id="loanForm" className="bg-white p-6 rounded-lg shadow-lg mb-3">
+        {modalMessage && (
+          <Modal onClose={() => setModalMessage(null)}>
+            {modalMessage}
+          </Modal>
+        )}
+        <div className="mb-4">
+          <label htmlFor="loanAmount" className="block text-gray-700 font-semibold">{t.loanAmount}</label>
+          <input type="text" id="loanAmount" value={loanAmount} onChange={handleLoanAmountChange} required className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
         </div>
-      </div>
+        <div className="mb-4">
+          <label htmlFor="loanYears" className="block text-gray-700 font-semibold">{t.loanYears}</label>
+          <input type="number" step="0.01" id="loanYears" value={loanYears} onChange={(e: ChangeEvent<HTMLInputElement>) => setLoanYears(e.target.value)} required className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+        <div className="mb-4">
+          <button
+            type="button"
+            onClick={() => generateRates(true)}
+            className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2 mr-2"
+          >
+            {t.generateCommonRates}
+          </button>
+          <button
+            type="button"
+            onClick={() => generateRates(false)}
+            className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            {t.generateRates}
+          </button>
+        </div>
+        <div id="interestRatesContainer" className="mb-4">
+          {interestRates.map((rate, index) => (
+            <div key={index} className="mb-2">
+              <label className="block text-gray-700 font-semibold">
+                {rate.commonRate ? t.interestRateCommon : t.interestRate(rate.period, rate.months)}
+              </label>
+              <input type="number" step="0.01" value={rate.rate} onChange={(e: ChangeEvent<HTMLInputElement>) => handleRateChange(index, e.target.value)} required className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+          ))}
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-700 font-semibold">{t.calcMethod}</label>
+          <div className="flex items-center">
+            <input type="radio" id="annuity" name="calcMethod" value="annuity" checked={calcMethod === 'annuity'} onChange={handleCalcMethodChange} className="mr-2" />
+            <label htmlFor="annuity" className="mr-4">{t.annuity}</label>
+            <input type="radio" id="fixed" name="calcMethod" value="fixed" checked={calcMethod === 'fixed'} onChange={handleCalcMethodChange} className="mr-2" />
+            <label htmlFor="fixed">{t.fixed}</label>
+          </div>
+        </div>
+      </form>
       {schedule.length > 0 && (
         <div id="results">
-          <h2 className="text-xl font-bold mb-4">{t.repaymentSchedule}</h2>
-          <div className="overflow-x-auto max-h-96">
-            <table id="scheduleTable" className="w-full bg-white rounded-lg shadow-lg mb-6">
-              <thead className="sticky top-0 bg-blue-500 text-white" style={{ zIndex: 1 }}>
-                <tr>
-                  <th className="p-2">{t.month}</th>
-                  <th className="p-2">{t.beginningBalance}</th>
-                  <th className="p-2">{t.interest}</th>
-                  <th className="p-2">{t.principal}</th>
-                  <th className="p-2">{t.totalPayment}</th>
-                  <th className="p-2">{t.endingBalance}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {schedule.map((entry, index) => (
-                  <tr key={index} className="border-b">
-                    <td className="p-2 text-center">{entry.month}</td>
-                    <td className="p-2">{formatCurrency(entry.beginningBalance)}</td>
-                    <td className="p-2">{formatCurrency(entry.interest)}</td>
-                    <td className="p-2">{formatCurrency(entry.principal)}</td>
-                    <td className="p-2">{formatCurrency(entry.payment)}</td>
-                    <td className="p-2">{formatCurrency(entry.endingBalance)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div className="mb-4">
-            <button type="button" onClick={downloadCSV} className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500">
-              Download CSV
-            </button>
-          </div>
-          <div id="statistics" className="bg-white p-6 rounded-lg shadow-lg mb-6">
+          <div id="statistics" className="bg-white p-6 rounded-lg shadow-lg mb-3">
             <h2 className="text-xl font-bold mb-4">{t.statistics}</h2>
             <p id="totalInterest" className="mb-2">{t.totalInterest} <span className='font-bold'>{formatCurrency(totalInterest)}</span> VND</p>
             <p id="totalPayment">{t.totalPaymentSummary} <span className='font-bold'>{formatCurrency(totalPayment)}</span> VND</p>
           </div>
-          <div id="chart" className="bg-white p-6 rounded-lg shadow-lg mb-6">
+          <div id="repaymentSchedule" className="bg-white p-6 rounded-lg shadow-lg mb-3">
+            <h2 className="text-xl font-bold mb-4">{t.repaymentSchedule}</h2>
+            <div className="overflow-x-auto max-h-96">
+              <table id="scheduleTable" className="w-full bg-white">
+                <thead className="sticky top-0 bg-blue-500 text-white" style={{ zIndex: 1 }}>
+                  <tr>
+                    <th className="p-2">{t.month}</th>
+                    <th className="p-2">{t.beginningBalance}</th>
+                    <th className="p-2">{t.interest}</th>
+                    <th className="p-2">{t.principal}</th>
+                    <th className="p-2">{t.totalPayment}</th>
+                    <th className="p-2">{t.endingBalance}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {schedule.map((entry, index) => (
+                    <tr key={index} className="border-b">
+                      <td className="p-2 text-center">{entry.month}</td>
+                      <td className="p-2">{formatCurrency(entry.beginningBalance)}</td>
+                      <td className="p-2">{formatCurrency(entry.interest)}</td>
+                      <td className="p-2">{formatCurrency(entry.principal)}</td>
+                      <td className="p-2">{formatCurrency(entry.payment)}</td>
+                      <td className="p-2">{formatCurrency(entry.endingBalance)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="mb-3 mt-3">
+              <button type="button" onClick={downloadCSV} className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 mb-2 mr-2">
+                {t.downloadCSV}
+              </button>
+              <button type="button" onClick={onSharePlan} className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                {t.sharePlan}
+              </button>
+            </div>
+          </div>
+          <div id="chart" className="bg-white p-6 rounded-lg shadow-lg mb-3">
             <h2 className="text-xl font-bold mb-4">{t.chart}</h2>
             <Line data={chartData} />
           </div>
-          <div id="statisticsChart" className="bg-white p-6 rounded-lg shadow-lg mb-6">
+          <div id="statisticsChart" className="bg-white p-6 rounded-lg shadow-lg mb-3">
             <h2 className="text-xl font-bold mb-4">{t.interestAndPrincipalChart}</h2>
             <Bar data={statisticsChartData} />
           </div>
         </div>
       )}
-    </form>
+      <footer className="bg-gray-800 text-white p-4 text-center">
+        <p>&copy; {new Date().getFullYear()} Loan Calculator. All rights reserved.</p>
+        <p>Built with <span className="heart">❤</span> by <a href="https://khuong.dev" target='_blank' className="underline">khuong.dev</a></p>
+      </footer>
+      <ToastContainer />
+    </div>
   );
 }
