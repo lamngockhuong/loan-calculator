@@ -42,7 +42,10 @@ const translations = {
       invalidInterestRates: 'Please enter valid interest rates.'
     },
     downloadCSV: 'Download CSV',
-    sharePlan: 'Share Plan'
+    sharePlan: 'Share Plan',
+    maxMonthlyPayment: 'to',
+    minMonthlyPayment: 'from',
+    monthlyPayment: 'Monthly Payment:'
   },
   vi: {
     loanAmount: 'Số tiền vay (VND):',
@@ -74,7 +77,10 @@ const translations = {
       invalidInterestRates: 'Vui lòng nhập lãi suất hợp lệ.'
     },
     downloadCSV: 'Tải CSV',
-    sharePlan: 'Chia sẻ kế hoạch'
+    sharePlan: 'Chia sẻ kế hoạch',
+    maxMonthlyPayment: 'đến',
+    minMonthlyPayment: 'từ',
+    monthlyPayment: 'Số tiền trả hàng tháng:'
   }
 };
 
@@ -101,6 +107,8 @@ export default function Loan({
   const [modalMessage, setModalMessage] = useState<string | null>(null);
   const [commonInterestRates, setCommonInterestRates] = useState<InterestRate[]>([]);
   const [individualInterestRates, setIndividualInterestRates] = useState<InterestRate[]>([]);
+  const [maxMonthlyPayment, setMaxMonthlyPayment] = useState<number>(0);
+  const [minMonthlyPayment, setMinMonthlyPayment] = useState<number>(0);
 
   const handleLoanAmountChange = (e: ChangeEvent<HTMLInputElement>): void => {
     const value = e.target.value.replace(/,/g, '');
@@ -174,6 +182,8 @@ export default function Loan({
     setSchedule(schedule);
     setTotalInterest(schedule.reduce((sum, entry) => sum + entry.interest, 0));
     setTotalPayment(schedule.reduce((sum, entry) => sum + entry.payment, 0));
+    setMaxMonthlyPayment(Math.max(...schedule.map(entry => entry.payment)));
+    setMinMonthlyPayment(Math.min(...schedule.map(entry => entry.payment)));
   };
 
   const handleCalcMethodChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -306,6 +316,11 @@ export default function Loan({
         <div id="results">
           <div id="statistics" className="bg-white p-6 rounded-lg shadow-lg mb-3">
             <h2 className="text-xl font-bold mb-4">{t.statistics}</h2>
+            {calcMethod === 'annuity' ? (
+              <p id="monthlyPayment" className="mb-2">{t.monthlyPayment} <span className='font-bold'>{formatCurrency(maxMonthlyPayment)}</span> VND</p>
+            ) : (
+                <p id="monthlyPayment" className="mb-2">{t.monthlyPayment} {t.minMonthlyPayment} <span className='font-bold'>{formatCurrency(minMonthlyPayment)}</span> VND {t.maxMonthlyPayment} <span className='font-bold'>{formatCurrency(maxMonthlyPayment)}</span> VND</p>
+            )}
             <p id="totalInterest" className="mb-2">{t.totalInterest} <span className='font-bold'>{formatCurrency(totalInterest)}</span> VND</p>
             <p id="totalPayment">{t.totalPaymentSummary} <span className='font-bold'>{formatCurrency(totalPayment)}</span> VND</p>
           </div>
