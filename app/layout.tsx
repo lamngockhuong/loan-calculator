@@ -4,6 +4,7 @@ import '../styles/globals.css';
 import Menu from '../components/Menu';
 import { useState, useEffect } from 'react';
 import { LanguageContext } from '../hooks/useLanguage';
+import { GoogleAnalytics } from '@next/third-parties/google'
 
 export default function RootLayout({
   children,
@@ -41,6 +42,7 @@ export default function RootLayout({
           <main>{children}</main>
         </LanguageContext.Provider>
       </body>
+      <GoogleAnalytics gaId="G-5N1MLC7RDY" />
     </html>
   )
 }

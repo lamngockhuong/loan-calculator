@@ -10,6 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@next/third-parties": "^15.1.7",
     "autoprefixer": "^10.4.20",
     "chart.js": "^4.4.7",
     "next": "15.1.7",

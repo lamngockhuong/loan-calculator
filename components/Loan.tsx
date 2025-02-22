@@ -167,7 +167,7 @@ export default function Loan({
     const totalMonths = Math.round(loanYearsValue * 12);
 
     const rates = interestRates.map(rate => parseFloat(rate.rate));
-    if (rates.some(rate => isNaN(rate) || rate < 0)) {
+    if (rates.length === 0 || rates.some(rate => isNaN(rate) || rate < 0)) {
       setModalMessage(t.modalMessages.invalidInterestRates);
       return;
     }
