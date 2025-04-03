@@ -35,6 +35,7 @@ export default function RootLayout({
         <meta name="description" content="Loan Calculator - Calculate your loan payments easily - Tính toán khoản vay của bạn một cách dễ dàng" />
         <meta name="keywords" content="loan, calculator, finance, payments, khoản vay, tính toán, tài chính, thanh toán" />
         <meta name="author" content="Lâm Ngọc Khương - me@khuong.dev" />
+        <title>Công cụ Tính Lãi Suất Vay Ngân Hàng - Loan Calculator | Khuong Dev</title>
       </head>
       <body>
         <LanguageContext.Provider value={language}>
