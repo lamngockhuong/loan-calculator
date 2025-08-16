@@ -49,8 +49,8 @@ const Menu = ({ handleLanguageChange }: MenuProps) => {
       </div>
       <ul ref={menuRef} className={`flex-col md:flex-row md:flex ${isOpen ? 'flex' : 'hidden'} space-y-2 md:space-y-0 md:space-x-2 mt-4 md:mt-0`}>
         <li className="bg-gray-700 p-2 rounded-md md:bg-transparent">
-          <Link href="/" passHref legacyBehavior>
-            <a rel="noopener noreferrer" className="text-white hover:text-gray-400">Home</a>
+          <Link href="/" rel="noopener noreferrer" className="text-white hover:text-gray-400">
+            Home
           </Link>
         </li>
         <li className="bg-gray-700 p-2 rounded-md md:bg-transparent">
