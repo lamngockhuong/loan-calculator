@@ -65,7 +65,37 @@
     - Hỗ trợ tiếng Anh và tiếng Việt.
 
 14. **Xử Lý Lỗi**
+
     - Hiển thị thông báo lỗi cho các đầu vào không hợp lệ như thời hạn vay, số tiền vay hoặc lãi suất không hợp lệ.
+
+15. **So Sánh Phương Pháp Song Song**
+
+    - Bật/tắt để so sánh phương pháp Trả góp đều vs Gốc cố định cùng lúc.
+    - Hiển thị chênh lệch lãi và phương pháp tiết kiệm hơn.
+
+16. **Biểu Đồ Cơ Cấu Thanh Toán**
+
+    - Biểu đồ tròn hiển thị tỷ lệ Gốc vs Lãi trong tổng thanh toán.
+
+17. **Tính Toán Trả Nợ Trước Hạn**
+
+    - Tính tiết kiệm lãi từ việc trả thêm (một lần hoặc hàng tháng).
+    - Hiển thị số tháng giảm được khi trả trước.
+
+18. **Tính Khả Năng Vay**
+
+    - Nhập thu nhập hàng tháng để tính số tiền vay tối đa.
+    - Dựa trên tỷ lệ DTI (Nợ/Thu nhập): 50% tối đa, 40% thoải mái.
+
+19. **Lưu/Tải Kế Hoạch**
+
+    - Lưu nhiều kế hoạch vay vào localStorage.
+    - Tải và so sánh các kịch bản khác nhau.
+
+20. **Xuất PDF**
+
+    - Xuất lịch trả nợ thành PDF chuyên nghiệp.
+    - Hỗ trợ tiếng Việt (không dấu) và tiếng Anh.
 
 ## Tối Ưu Hóa SEO
 

@@ -68,6 +68,35 @@ This is a loan calculator application built with [Next.js](https://nextjs.org) a
 
     - Displays modal messages for invalid inputs such as invalid loan term, loan amount, or interest rates.
 
+15. **Compare Methods Side-by-Side**
+
+    - Toggle to compare Annuity vs Fixed Principal methods simultaneously.
+    - Shows interest difference and which method saves more.
+
+16. **Payment Breakdown Chart**
+
+    - Doughnut chart showing Principal vs Interest ratio in total payment.
+
+17. **Early Repayment Calculator**
+
+    - Calculate interest savings from extra payments (one-time or monthly).
+    - Shows months reduced from early repayment.
+
+18. **Affordability Calculator**
+
+    - Input monthly income to calculate maximum loan amount.
+    - Based on DTI (Debt-to-Income) ratio: 50% max, 40% comfortable.
+
+19. **Save/Load Plans**
+
+    - Save multiple loan plans to localStorage.
+    - Load and compare different scenarios.
+
+20. **Export to PDF**
+
+    - Professional PDF export of repayment schedule.
+    - Supports Vietnamese (ASCII-safe) and English.
+
 ## SEO Optimization
 
 This application includes the following SEO optimizations:

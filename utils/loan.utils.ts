@@ -86,12 +86,28 @@ export const computeScheduleFixed = (
   return schedule;
 };
 
+/**
+ * Calculate Payment (PMT) - Standard financial formula
+ * PMT = r × (PV × (1+r)^n + FV) / ((1+r)^n - 1)
+ *
+ * @param ir - Interest rate per period (monthly rate = annual rate / 12 / 100)
+ * @param np - Number of periods (months)
+ * @param pv - Present value (loan amount)
+ * @param fv - Future value (default 0)
+ * @returns Monthly payment amount
+ */
 function PMT(ir: number, np: number, pv: number, fv: number): number {
   if (!fv) {
     fv = 0;
   }
-  const pmt =
-    (ir * (pv * Math.pow(ir + 1, np) + fv)) / (Math.pow(ir + 1, np) - 1);
+
+  // Handle zero interest rate - simple division
+  if (ir === 0) {
+    return (pv + fv) / np;
+  }
+
+  const rateFactor = Math.pow(1 + ir, np);
+  const pmt = (ir * (pv * rateFactor + fv)) / (rateFactor - 1);
   return pmt;
 }
 
@@ -116,3 +132,134 @@ export function calculateMonthlyPayment(
 
   return monthlyPayment;
 }
+
+// Phase 4: Affordability Calculator
+export interface AffordabilityResult {
+  maxLoan50: number; // 50% DTI
+  maxLoan40: number; // 40% DTI (comfortable)
+  maxMonthlyPayment50: number;
+  maxMonthlyPayment40: number;
+}
+
+export function computeAffordability(
+  monthlyIncome: number,
+  interestRate: number, // annual rate in %
+  loanYears: number
+): AffordabilityResult {
+  const monthlyRate = interestRate / 100 / 12;
+  const totalMonths = Math.round(loanYears * 12);
+
+  const maxPayment50 = monthlyIncome * 0.5;
+  const maxPayment40 = monthlyIncome * 0.4;
+
+  // Reverse PMT formula: PV = PMT * ((1 - (1 + r)^-n) / r)
+  const calculateMaxLoan = (maxPayment: number): number => {
+    if (monthlyRate === 0) {
+      return maxPayment * totalMonths;
+    }
+    const factor = (1 - Math.pow(1 + monthlyRate, -totalMonths)) / monthlyRate;
+    return maxPayment * factor;
+  };
+
+  return {
+    maxLoan50: calculateMaxLoan(maxPayment50),
+    maxLoan40: calculateMaxLoan(maxPayment40),
+    maxMonthlyPayment50: maxPayment50,
+    maxMonthlyPayment40: maxPayment40
+  };
+}
+
+// Phase 3: Early Repayment Calculator
+export interface EarlyRepaymentResult {
+  newSchedule: ScheduleEntry[];
+  originalTotalInterest: number;
+  newTotalInterest: number;
+  interestSaved: number;
+  originalMonths: number;
+  newMonths: number;
+  monthsReduced: number;
+}
+
+export function computeEarlyRepayment(
+  loanAmount: number,
+  totalMonths: number,
+  interestRates: number[],
+  calcMethod: 'annuity' | 'fixed',
+  extraAmount: number,
+  paymentType: 'one-time' | 'monthly'
+): EarlyRepaymentResult {
+  // Calculate original schedule
+  const originalSchedule = calcMethod === 'annuity'
+    ? computeScheduleAnnuity(loanAmount, totalMonths, interestRates)
+    : computeScheduleFixed(loanAmount, totalMonths, interestRates);
+
+  const originalTotalInterest = originalSchedule.reduce((sum, e) => sum + e.interest, 0);
+
+  // Calculate new schedule with extra payment
+  const newSchedule: ScheduleEntry[] = [];
+  let remainingLoan = loanAmount;
+
+  // For one-time: reduce principal at month 1
+  if (paymentType === 'one-time') {
+    remainingLoan = Math.max(0, loanAmount - extraAmount);
+  }
+
+  const effectiveTotalMonths = paymentType === 'one-time'
+    ? totalMonths
+    : totalMonths;
+
+  let month = 1;
+  while (remainingLoan > 0.01 && month <= totalMonths * 2) {
+    const interestRateMonth = getInterestRateMonthly(interestRates, month);
+
+    let principal: number;
+    let monthlyPayment: number;
+
+    if (calcMethod === 'annuity') {
+      const remainingMonths = Math.max(1, effectiveTotalMonths - month + 1);
+      monthlyPayment = PMT(interestRateMonth, remainingMonths, remainingLoan, 0);
+      if (paymentType === 'monthly') {
+        monthlyPayment += extraAmount;
+      }
+      const interestPayment = remainingLoan * interestRateMonth;
+      principal = Math.min(monthlyPayment - interestPayment, remainingLoan);
+      monthlyPayment = principal + interestPayment;
+    } else {
+      const fixedPrincipal = loanAmount / totalMonths;
+      principal = paymentType === 'monthly'
+        ? fixedPrincipal + extraAmount
+        : fixedPrincipal;
+      principal = Math.min(principal, remainingLoan);
+      const interestPayment = remainingLoan * interestRateMonth;
+      monthlyPayment = principal + interestPayment;
+    }
+
+    const interestPayment = remainingLoan * interestRateMonth;
+    const endingBalance = Math.max(0, remainingLoan - principal);
+
+    newSchedule.push({
+      month,
+      beginningBalance: remainingLoan,
+      interest: interestPayment,
+      principal,
+      payment: monthlyPayment,
+      endingBalance
+    });
+
+    remainingLoan = endingBalance;
+    month++;
+  }
+
+  const newTotalInterest = newSchedule.reduce((sum, e) => sum + e.interest, 0);
+
+  return {
+    newSchedule,
+    originalTotalInterest,
+    newTotalInterest,
+    interestSaved: originalTotalInterest - newTotalInterest,
+    originalMonths: originalSchedule.length,
+    newMonths: newSchedule.length,
+    monthsReduced: originalSchedule.length - newSchedule.length
+  };
+}
+
