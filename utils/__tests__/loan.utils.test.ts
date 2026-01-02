@@ -134,7 +134,8 @@ describe("loan.utils", () => {
 
       expect(schedule.length).toBe(totalMonths);
       expect(schedule[0].beginningBalance).toBe(100000);
-      expect(schedule[totalMonths - 1].endingBalance).toBeNaN();
+      // Zero interest rate should result in ending balance near 0 (loan fully paid)
+      expect(schedule[totalMonths - 1].endingBalance).toBeCloseTo(0, 2);
     });
 
     it("should handle negative loan amount", () => {
@@ -193,7 +194,8 @@ describe("loan.utils", () => {
 
       expect(schedule.length).toBe(totalMonths);
       expect(schedule[0].beginningBalance).toBe(100000);
-      expect(schedule[totalMonths - 1].endingBalance).toBeNaN();
+      // Zero interest rate should result in ending balance near 0 (loan fully paid)
+      expect(schedule[totalMonths - 1].endingBalance).toBeCloseTo(0, 2);
     });
 
     it("should handle multiple interest rates with negative interest rates", () => {
