@@ -33,3 +33,16 @@ export interface LoanProps {
   autoCalculate: boolean;
   onSharePlan: () => void;
 }
+
+// Phase 5: Saved Plans
+export interface SavedPlan {
+  id: string;
+  name: string;
+  createdAt: string;
+  loanAmount: string;
+  loanYears: string;
+  calcMethod: string;
+  interestRates: InterestRate[];
+  totalInterest: number;
+  totalPayment: number;
+}

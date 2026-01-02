@@ -16,6 +16,8 @@ export default function RootLayout({
   useEffect(() => {
     const storedLanguage = localStorage.getItem('language') as 'en' | 'vi';
     if (storedLanguage) {
+      // Intentional: hydrate from localStorage on mount
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLanguage(storedLanguage);
     }
   }, []);

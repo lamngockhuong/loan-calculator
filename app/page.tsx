@@ -42,11 +42,14 @@ function HomePage() {
     const decompressedParams = decompressed(decodeURIComponent(compressedParams));
     const { loanAmount, loanYears, calcMethod, interestRates } = decompressedParams;
 
+    // Intentional: hydrate state from URL params on mount
+    /* eslint-disable react-hooks/set-state-in-effect */
     setLoanAmount(loanAmount);
     setLoanYears(loanYears);
     setCalcMethod(calcMethod);
     setInterestRates(interestRates);
     setAutoCalculate(true);
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, [searchParams]);
 
   const handleSharePlan = () => {
@@ -68,8 +71,8 @@ function HomePage() {
   };
 
   return (
-    <div className="p-3 bg-gray-100 min-h-screen">
-      <h1 className="text-4xl font-extrabold mb-6 text-center text-gray-800">{translations[language]}</h1>
+    <div className="px-4 py-8 sm:px-6 lg:px-8 min-h-screen">
+      <h1 className="text-3xl sm:text-4xl font-bold mb-8 text-center text-slate-800">{translations[language]}</h1>
       <Loan
         loanAmount={loanAmount}
         setLoanAmount={setLoanAmount}
