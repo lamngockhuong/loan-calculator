@@ -85,7 +85,12 @@
 18. **Tính Khả Năng Vay**
 
     - Nhập thu nhập hàng tháng để tính số tiền vay tối đa.
-    - Dựa trên tỷ lệ DTI (Nợ/Thu nhập): 50% tối đa, 40% thoải mái.
+    - Dựa trên tỷ lệ DTI (Nợ/Thu nhập): 43% tối đa, 36% thoải mái.
+    - **Hướng dẫn ngưỡng DTI:**
+      - Dưới 36%: Lý tưởng - Tài chính lành mạnh
+      - 37-42%: Chấp nhận được - Cân nhắc khi vay thêm
+      - 43-49%: Cảnh báo - Rủi ro tín dụng cao, có thể bị từ chối vay
+      - Trên 50%: Báo động - Cần kế hoạch giảm nợ ngay
 
 19. **Lưu/Tải Kế Hoạch**
 
@@ -96,6 +101,17 @@
 
     - Xuất lịch trả nợ thành PDF chuyên nghiệp.
     - Hỗ trợ tiếng Việt (không dấu) và tiếng Anh.
+
+## Tài Liệu
+
+Tài liệu chi tiết về cách tính toán trong thư mục `docs/`:
+
+| Tài liệu | Mô tả |
+| -------- | ----- |
+| [Tính Khả Năng Vay](docs/affordability-calculation_vi.md) | Cách tính số tiền vay tối đa dựa trên tỷ lệ DTI |
+| [Trả Nợ Trước Hạn](docs/early-repayment-calculation_vi.md) | Cách tính tiết kiệm lãi khi trả trước |
+
+Phiên bản tiếng Anh: bỏ `_vi` trong tên file
 
 ## Tối Ưu Hóa SEO
 

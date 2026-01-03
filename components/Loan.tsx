@@ -125,17 +125,14 @@ const translations = {
     million: 'M',
     billion: 'B',
     years: 'years',
-    // Phase 1: Compare methods
     compareMode: 'Compare Methods',
     annuityMethod: 'Annuity',
     fixedMethod: 'Fixed Principal',
     interestDiff: 'Interest Difference',
     youSave: 'You save',
-    // Phase 2: Pie chart
     paymentBreakdown: 'Payment Breakdown',
     principalLabel: 'Principal',
     interestLabel: 'Interest',
-    // Phase 3: Early repayment
     earlyRepayment: 'Early Repayment',
     extraPayment: 'Extra Payment Amount',
     oneTime: 'One-time',
@@ -143,13 +140,16 @@ const translations = {
     interestSaved: 'Interest Saved',
     monthsReduced: 'Months Reduced',
     calculateSavings: 'Calculate Savings',
-    // Phase 4: Affordability
     affordability: 'Affordability Calculator',
     monthlyIncome: 'Monthly Income',
-    maxLoan: 'Maximum Loan (50% DTI)',
-    comfortableLoan: 'Comfortable Loan (40% DTI)',
+    maxLoan: 'Maximum Loan (43% DTI)',
+    comfortableLoan: 'Comfortable Loan (36% DTI)',
     calculateAffordability: 'Calculate',
-    // Phase 5: Save plans
+    dtiGuideTitle: 'DTI Ratio Guide',
+    dtiExcellent: 'Below 36%: Ideal - Strong financial health',
+    dtiGood: '37-42%: Acceptable - Be cautious with new debt',
+    dtiWarning: '43-49%: Warning - High debt risk, may face loan rejection',
+    dtiCritical: 'Above 50%: Critical - Need debt reduction plan urgently',
     savedPlans: 'Saved Plans',
     savePlan: 'Save Plan',
     planName: 'Plan Name',
@@ -159,7 +159,6 @@ const translations = {
     planSaved: 'Plan saved successfully!',
     planDeleted: 'Plan deleted!',
     planLoaded: 'Plan loaded!',
-    // Phase 6: Export PDF
     exportPDF: 'Export PDF'
   },
   vi: {
@@ -204,17 +203,14 @@ const translations = {
     million: 'Tr',
     billion: 'Tỷ',
     years: 'năm',
-    // Phase 1: Compare methods
     compareMode: 'So sánh phương pháp',
     annuityMethod: 'Trả góp đều',
     fixedMethod: 'Gốc cố định',
     interestDiff: 'Chênh lệch lãi',
     youSave: 'Tiết kiệm',
-    // Phase 2: Pie chart
     paymentBreakdown: 'Cơ cấu thanh toán',
     principalLabel: 'Gốc',
     interestLabel: 'Lãi',
-    // Phase 3: Early repayment
     earlyRepayment: 'Trả nợ trước hạn',
     extraPayment: 'Số tiền trả thêm',
     oneTime: 'Một lần',
@@ -222,13 +218,16 @@ const translations = {
     interestSaved: 'Tiết kiệm lãi',
     monthsReduced: 'Giảm số tháng',
     calculateSavings: 'Tính tiết kiệm',
-    // Phase 4: Affordability
     affordability: 'Khả năng vay',
     monthlyIncome: 'Thu nhập hàng tháng',
-    maxLoan: 'Vay tối đa (50% DTI)',
-    comfortableLoan: 'Vay thoải mái (40% DTI)',
+    maxLoan: 'Vay tối đa (43% DTI)',
+    comfortableLoan: 'Vay thoải mái (36% DTI)',
     calculateAffordability: 'Tính toán',
-    // Phase 5: Save plans
+    dtiGuideTitle: 'Hướng dẫn tỷ lệ DTI',
+    dtiExcellent: 'Dưới 36%: Lý tưởng - Tài chính lành mạnh',
+    dtiGood: '37-42%: Chấp nhận được - Cân nhắc khi vay thêm',
+    dtiWarning: '43-49%: Cảnh báo - Rủi ro tín dụng cao, có thể bị từ chối vay',
+    dtiCritical: 'Trên 50%: Báo động - Cần kế hoạch giảm nợ ngay',
     savedPlans: 'Kế hoạch đã lưu',
     savePlan: 'Lưu kế hoạch',
     planName: 'Tên kế hoạch',
@@ -238,7 +237,6 @@ const translations = {
     planSaved: 'Đã lưu kế hoạch!',
     planDeleted: 'Đã xóa kế hoạch!',
     planLoaded: 'Đã tải kế hoạch!',
-    // Phase 6: Export PDF
     exportPDF: 'Xuất PDF'
   }
 };
@@ -309,21 +307,21 @@ export default function Loan({
   const [maxMonthlyPayment, setMaxMonthlyPayment] = useState<number>(0);
   const [minMonthlyPayment, setMinMonthlyPayment] = useState<number>(0);
 
-  // Phase 1: Compare mode
+  // Compare mode
   const [compareMode, setCompareMode] = useState<boolean>(false);
   const [annuitySchedule, setAnnuitySchedule] = useState<ScheduleEntry[]>([]);
   const [fixedSchedule, setFixedSchedule] = useState<ScheduleEntry[]>([]);
 
-  // Phase 3: Early repayment
+  // Early repayment
   const [extraPayment, setExtraPayment] = useState<string>('');
   const [paymentType, setPaymentType] = useState<'one-time' | 'monthly'>('monthly');
   const [earlyRepaymentResult, setEarlyRepaymentResult] = useState<EarlyRepaymentResult | null>(null);
 
-  // Phase 4: Affordability
+  // Affordability
   const [monthlyIncome, setMonthlyIncome] = useState<string>('');
   const [affordabilityResult, setAffordabilityResult] = useState<AffordabilityResult | null>(null);
 
-  // Phase 5: Saved plans
+  // Saved plans
   const [savedPlans, setSavedPlans] = useState<SavedPlan[]>([]);
   const [planName, setPlanName] = useState<string>('');
 
@@ -445,7 +443,7 @@ export default function Loan({
     document.body.removeChild(link);
   };
 
-  // Phase 6: Export PDF (uses ASCII-safe translations for jsPDF compatibility)
+  // Export PDF (uses ASCII-safe translations for jsPDF compatibility)
   const exportPDF = () => {
     const doc = new jsPDF();
     const pdf = pdfTranslations[language];
@@ -611,7 +609,7 @@ export default function Loan({
     ],
   };
 
-  // Phase 2: Pie chart data
+  // Pie chart data
   const pieChartData = {
     labels: [t.principalLabel, t.interestLabel],
     datasets: [{
@@ -653,7 +651,7 @@ export default function Loan({
     }
   };
 
-  // Phase 1: Compare mode calculation
+  // Compare mode calculation
   const calculateComparison = () => {
     const loanAmountValue = parseFloat(loanAmount.replace(/,/g, ''));
     const loanYearsValue = parseFloat(loanYears);
@@ -669,7 +667,7 @@ export default function Loan({
     setFixedSchedule(fixed);
   };
 
-  // Phase 3: Early repayment calculation
+  // Early repayment calculation
   const calculateEarlyRepayment = () => {
     const loanAmountValue = parseFloat(loanAmount.replace(/,/g, ''));
     const loanYearsValue = parseFloat(loanYears);
@@ -690,7 +688,7 @@ export default function Loan({
     setEarlyRepaymentResult(result);
   };
 
-  // Phase 4: Affordability calculation
+  // Affordability calculation
   const calculateAffordabilityResult = () => {
     const incomeValue = parseFloat(monthlyIncome.replace(/,/g, ''));
     const loanYearsValue = parseFloat(loanYears);
@@ -715,7 +713,7 @@ export default function Loan({
     setAffordabilityResult(result);
   };
 
-  // Phase 5: Load saved plans from localStorage
+  // Load saved plans from localStorage
   useEffect(() => {
     const stored = localStorage.getItem('savedLoanPlans');
     if (stored) {
@@ -1113,7 +1111,7 @@ export default function Loan({
                 </div>
               </div>
             </div>
-            {/* Phase 2: Pie Chart */}
+            {/* Pie Chart */}
             <div className="card">
               <div className="card-body">
                 <h2 className="text-xl font-semibold text-slate-800 mb-4">{t.paymentBreakdown}</h2>
@@ -1128,7 +1126,7 @@ export default function Loan({
             </div>
           </div>
 
-          {/* Phase 1: Compare Methods Toggle */}
+          {/* Compare Methods Toggle */}
           <div className="card">
             <div className="card-body">
               <div className="flex items-center justify-between mb-4">
@@ -1193,7 +1191,7 @@ export default function Loan({
             </div>
           </div>
 
-          {/* Phase 3: Early Repayment Calculator */}
+          {/* Early Repayment Calculator */}
           <div className="card">
               <div className="card-body">
                 <h2 className="text-xl font-semibold text-slate-800 mb-4">{t.earlyRepayment}</h2>
@@ -1266,7 +1264,7 @@ export default function Loan({
 
       {/* Tools that work without schedule */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-        {/* Phase 4: Affordability Calculator */}
+        {/* Affordability Calculator */}
         <div className="card">
           <div className="card-body">
             <h2 className="text-xl font-semibold text-slate-800 mb-4">{t.affordability}</h2>
@@ -1300,21 +1298,43 @@ export default function Loan({
               </button>
               {affordabilityResult && (
                 <div className="space-y-3">
-                  <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                  <div className="p-4 bg-orange-50 rounded-lg border border-orange-200">
                     <span className="text-sm text-slate-600">{t.maxLoan}</span>
-                    <p className="font-bold text-blue-700 text-lg">{formatCurrency(affordabilityResult.maxLoan50)} VND</p>
+                    <p className="font-bold text-orange-700 text-lg">{formatCurrency(affordabilityResult.maxLoan43)} VND</p>
                   </div>
                   <div className="p-4 bg-green-50 rounded-lg border border-green-200">
                     <span className="text-sm text-slate-600">{t.comfortableLoan}</span>
-                    <p className="font-bold text-green-700 text-lg">{formatCurrency(affordabilityResult.maxLoan40)} VND</p>
+                    <p className="font-bold text-green-700 text-lg">{formatCurrency(affordabilityResult.maxLoan36)} VND</p>
                   </div>
                 </div>
               )}
+              {/* DTI Guide */}
+              <div className="mt-4 p-4 bg-slate-50 rounded-lg border border-slate-200">
+                <h3 className="text-sm font-semibold text-slate-700 mb-2">{t.dtiGuideTitle}</h3>
+                <ul className="space-y-1 text-xs text-slate-600">
+                  <li className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                    {t.dtiExcellent}
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-yellow-500"></span>
+                    {t.dtiGood}
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-orange-500"></span>
+                    {t.dtiWarning}
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-red-500"></span>
+                    {t.dtiCritical}
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Phase 5: Saved Plans */}
+        {/* Saved Plans */}
         <div className="card">
           <div className="card-body">
             <h2 className="text-xl font-semibold text-slate-800 mb-4">{t.savedPlans}</h2>

@@ -133,12 +133,15 @@ export function calculateMonthlyPayment(
   return monthlyPayment;
 }
 
-// Phase 4: Affordability Calculator
+// Affordability Calculator
+// DTI thresholds based on financial best practices:
+// - 36%: Ideal/comfortable - strong financial health
+// - 43%: Maximum - warning threshold, higher risk
 export interface AffordabilityResult {
-  maxLoan50: number; // 50% DTI
-  maxLoan40: number; // 40% DTI (comfortable)
-  maxMonthlyPayment50: number;
-  maxMonthlyPayment40: number;
+  maxLoan43: number; // 43% DTI (maximum)
+  maxLoan36: number; // 36% DTI (comfortable/ideal)
+  maxMonthlyPayment43: number;
+  maxMonthlyPayment36: number;
 }
 
 export function computeAffordability(
@@ -149,8 +152,8 @@ export function computeAffordability(
   const monthlyRate = interestRate / 100 / 12;
   const totalMonths = Math.round(loanYears * 12);
 
-  const maxPayment50 = monthlyIncome * 0.5;
-  const maxPayment40 = monthlyIncome * 0.4;
+  const maxPayment43 = monthlyIncome * 0.43;
+  const maxPayment36 = monthlyIncome * 0.36;
 
   // Reverse PMT formula: PV = PMT * ((1 - (1 + r)^-n) / r)
   const calculateMaxLoan = (maxPayment: number): number => {
@@ -162,14 +165,14 @@ export function computeAffordability(
   };
 
   return {
-    maxLoan50: calculateMaxLoan(maxPayment50),
-    maxLoan40: calculateMaxLoan(maxPayment40),
-    maxMonthlyPayment50: maxPayment50,
-    maxMonthlyPayment40: maxPayment40
+    maxLoan43: calculateMaxLoan(maxPayment43),
+    maxLoan36: calculateMaxLoan(maxPayment36),
+    maxMonthlyPayment43: maxPayment43,
+    maxMonthlyPayment36: maxPayment36
   };
 }
 
-// Phase 3: Early Repayment Calculator
+// Early Repayment Calculator
 export interface EarlyRepaymentResult {
   newSchedule: ScheduleEntry[];
   originalTotalInterest: number;

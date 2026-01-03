@@ -40,18 +40,24 @@ hooks/
 
 types/
 └── loan.interfaces.ts      # TypeScript interfaces
+
+docs/
+├── affordability-calculation.md      # Affordability calculator docs (EN)
+├── affordability-calculation_vi.md   # Affordability calculator docs (VI)
+├── early-repayment-calculation.md    # Early repayment docs (EN)
+└── early-repayment-calculation_vi.md # Early repayment docs (VI)
 ```
 
 ### Key Patterns
 
 **State Management**: All loan state (amount, years, rates, schedule) lifted to `page.tsx`, passed down to `Loan.tsx` as props. Language state in `layout.tsx` with React Context.
 
-**Calculation Methods**:
+**Calculation Methods** (see `docs/` for details):
 
 - `computeScheduleAnnuity()` - Equal monthly payments (PMT formula)
 - `computeScheduleFixed()` - Fixed principal, decreasing interest
-- `computeAffordability()` - Max loan based on income (DTI ratio)
-- `computeEarlyRepayment()` - Interest savings calculator
+- `computeAffordability()` - Max loan based on income (DTI 36%/43%) (see `docs/affordability-calculation.md`)
+- `computeEarlyRepayment()` - Interest savings calculator (see `docs/early-repayment-calculation.md`)
 
 **URL Sharing**: Loan params compressed with `pako` (deflate) and base64-encoded in `?data=` query param.
 

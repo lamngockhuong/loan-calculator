@@ -85,7 +85,12 @@ This is a loan calculator application built with [Next.js](https://nextjs.org) a
 18. **Affordability Calculator**
 
     - Input monthly income to calculate maximum loan amount.
-    - Based on DTI (Debt-to-Income) ratio: 50% max, 40% comfortable.
+    - Based on DTI (Debt-to-Income) ratio: 43% max, 36% comfortable.
+    - **DTI Threshold Guide:**
+      - Below 36%: Ideal - Strong financial health
+      - 37-42%: Acceptable - Be cautious with new debt
+      - 43-49%: Warning - High debt risk, may face loan rejection
+      - Above 50%: Critical - Need debt reduction plan urgently
 
 19. **Save/Load Plans**
 
@@ -96,6 +101,17 @@ This is a loan calculator application built with [Next.js](https://nextjs.org) a
 
     - Professional PDF export of repayment schedule.
     - Supports Vietnamese (ASCII-safe) and English.
+
+## Documentation
+
+Detailed calculation documentation available in `docs/`:
+
+| Document | Description |
+| -------- | ----------- |
+| [Affordability Calculator](docs/affordability-calculation.md) | How max loan is calculated based on DTI ratio |
+| [Early Repayment](docs/early-repayment-calculation.md) | How interest savings are calculated |
+
+Vietnamese versions: `*_vi.md`
 
 ## SEO Optimization
 
