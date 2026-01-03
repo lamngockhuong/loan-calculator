@@ -202,40 +202,40 @@ describe('Financial Accuracy Tests', () => {
   });
 
   describe('Affordability Calculator Accuracy', () => {
-    it('should calculate max loan based on 50% DTI correctly', () => {
+    it('should calculate max loan based on 43% DTI correctly', () => {
       const monthlyIncome = 30_000_000; // 30M/month
       const interestRate = 8;
       const loanYears = 20;
 
       const result = computeAffordability(monthlyIncome, interestRate, loanYears);
 
-      // Max payment at 50% DTI = 15M/month
-      expect(result.maxMonthlyPayment50).toBe(15_000_000);
+      // Max payment at 43% DTI = 12.9M/month
+      expect(result.maxMonthlyPayment43).toBe(12_900_000);
 
       // Verify max loan by calculating payment for that loan
       const verifyPayment = calculateMonthlyPayment(
         interestRate / 100 / 12,
         loanYears * 12,
-        result.maxLoan50
+        result.maxLoan43
       );
-      expect(verifyPayment).toBeCloseTo(15_000_000, -2);
+      expect(verifyPayment).toBeCloseTo(12_900_000, -2);
     });
 
-    it('should calculate max loan based on 40% DTI correctly', () => {
+    it('should calculate max loan based on 36% DTI correctly', () => {
       const monthlyIncome = 50_000_000;
       const interestRate = 10;
       const loanYears = 15;
 
       const result = computeAffordability(monthlyIncome, interestRate, loanYears);
 
-      expect(result.maxMonthlyPayment40).toBe(20_000_000); // 40% of 50M
+      expect(result.maxMonthlyPayment36).toBe(18_000_000); // 36% of 50M
 
       const verifyPayment = calculateMonthlyPayment(
         interestRate / 100 / 12,
         loanYears * 12,
-        result.maxLoan40
+        result.maxLoan36
       );
-      expect(verifyPayment).toBeCloseTo(20_000_000, -2);
+      expect(verifyPayment).toBeCloseTo(18_000_000, -2);
     });
 
     it('should handle zero interest rate', () => {
@@ -246,8 +246,8 @@ describe('Financial Accuracy Tests', () => {
       const result = computeAffordability(monthlyIncome, interestRate, loanYears);
 
       // At 0% interest, max loan = max payment * total months
-      expect(result.maxLoan50).toBe(10_000_000 * 120); // 1.2 billion
-      expect(result.maxLoan40).toBe(8_000_000 * 120); // 960 million
+      expect(result.maxLoan43).toBe(8_600_000 * 120); // 1.032 billion (43% of 20M * 120)
+      expect(result.maxLoan36).toBe(7_200_000 * 120); // 864 million (36% of 20M * 120)
     });
   });
 

@@ -34,7 +34,7 @@ export interface LoanProps {
   onSharePlan: () => void;
 }
 
-// Phase 5: Saved Plans
+// Saved Plans
 export interface SavedPlan {
   id: string;
   name: string;
